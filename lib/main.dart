@@ -1,10 +1,9 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-
 import "package:music_player/models/models.dart";
+import 'package:music_player/screens/muiscpage.dart';
 
 void main() {
-  // var x = File("xxx.m4a");
-  // print(jsonDecode(x.readAsStringSync()));
   runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     home: SearchPage(),
@@ -19,24 +18,27 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final AudioPlayer player = AudioPlayer();
+
   static List<MovieModels> main_movie_list = [
-    MovieModels("Bloody Mary", "images/3.jpg"),
-    MovieModels("Panda", "images/1.jpg"),
-    MovieModels("Love Your Voice", "images/2.jpg"),
-    MovieModels("bad guy", "images/4.jpg"),
-    MovieModels("Close Eyes", "images/5.jpg"),
-    MovieModels("Rave", "images/6.jpg"),
-    MovieModels("Pepas", "images/7.jpg"),
-    MovieModels("The Naxt Episode", "images/8.jpg"),
-    MovieModels("Cradles", "images/9.jpg"),
-    MovieModels("New Americana", "images/10.jpg"),
-    MovieModels("Hislerim", "images/11.jpg"),
-    MovieModels("Natural", "images/12.jpg"),
-    MovieModels("Asaya", "images/13.jpg"),
-    MovieModels("Get Low", "images/14.jpg"),
-    MovieModels("Enemy", "images/15.jpg"),
-    MovieModels("Blinding Lights", "images/16.jpg"),
-    MovieModels("Somebody That I Used To Know", "images/17.jpg"),
+    MovieModels("Bloody Mary", "images/3.jpg", "BloodyMary.mp3"),
+    MovieModels("Panda", "images/1.jpg", "Panda.m4a"),
+    MovieModels("Love Your Voice", "images/2.jpg", "Loveyourvoice.m4a"),
+    MovieModels("bad guy", "images/4.jpg", "badguy.m4a"),
+    MovieModels("Close Eyes", "images/5.jpg", "Closeeyes.mp3"),
+    MovieModels("Rave", "images/6.jpg", "Rave.mp3"),
+    MovieModels("Pepas", "images/7.jpg", "Pepas.m4a"),
+    MovieModels("The Next Episode", "images/8.jpg", "TheNextEpisode.m4a"),
+    MovieModels("Cradles", "images/9.jpg", "Cradles.m4a"),
+    MovieModels("New Americana", "images/10.jpg", "NewAmericana.m4a"),
+    MovieModels("Hislerim", "images/11.jpg", "Hislerim.m4a"),
+    MovieModels("Natural", "images/12.jpg", "Natural.m4a"),
+    MovieModels("Asaya", "images/13.jpg", "Asaya.m4a"),
+    MovieModels("Get Low", "images/14.jpg", "GetLow.m4a"),
+    MovieModels("Enemy", "images/15.jpg", "Enemy.m4a"),
+    MovieModels("Blinding Lights", "images/16.jpg", "BlindingLights.m4a"),
+    MovieModels("Somebody That I Used To Know", "images/17.jpg",
+        "SomebodyThatIUsedToKnow.m4a"),
   ];
 
   List<MovieModels> list_display = List.from(main_movie_list);
@@ -52,15 +54,9 @@ class _SearchPageState extends State<SearchPage> {
   Color _background = Color(0xFF1f1545);
   Color _TextField = Color(0xff302360);
   bool a = true;
-  bool b = true;
-  bool c = false;
-  String music_name = "";
   Icon _icon = Icon(Icons.nightlight_rounded);
   Color _TextColor = Colors.white;
   Color _IconColor = Colors.white;
-  Icon music_icon = Icon(Icons.play_arrow);
-  double _height = 0;
-  double _width = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -133,9 +129,11 @@ class _SearchPageState extends State<SearchPage> {
                 height: 20,
               ),
               TextField(
+               
                 onChanged: (value) => updateList(value),
                 style: TextStyle(color: _TextColor),
                 decoration: InputDecoration(
+                  
                     filled: true,
                     fillColor: _TextField,
                     border: const OutlineInputBorder(
@@ -161,14 +159,19 @@ class _SearchPageState extends State<SearchPage> {
                         itemCount: list_display.length,
                         itemBuilder: (context, index) => ListTile(
                           onTap: () {
-                            setState(() {
-                              music_name = list_display[index].music_title!;
-                              music_icon = Icon(Icons.pause);
-                              b = false;
-                              c = true;
-                              _height =
-                                  MediaQuery.of(context).size.height * 0.1;
-                            });
+                            String x = main_movie_list[index].muisc_name!;
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MusicPage(
+                                    music_name: x,
+                                    music_img:
+                                        main_movie_list[index].music_img!,
+                                    music_title:
+                                        main_movie_list[index].music_title!,
+                                    a: a,
+                                  ),
+                                ));
                           },
                           title: Text(
                             list_display[index].music_title!,
@@ -184,41 +187,44 @@ class _SearchPageState extends State<SearchPage> {
                         // const Divider(),
                       ),
               ),
-              Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20)),
-                  height: _height,
-                  width: double.infinity,
-                  child: c
-                      ? Column(
-                          children: [
-                            Text(music_name,
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Icon(Icons.arrow_back_ios),
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      if (b) {
-                                        music_icon = Icon(Icons.pause);
-                                        b = false;
-                                      } else {
-                                        b = true;
-                                        music_icon = Icon(Icons.play_arrow);
-                                      }
-                                    });
-                                  },
-                                  icon: music_icon,
-                                ),
-                                Icon(Icons.arrow_forward_ios)
-                              ],
-                            ),
-                          ],
-                        )
-                      : Container())
+              // Container(
+              //   decoration: BoxDecoration(
+              //       color: Colors.white,
+              //       borderRadius: BorderRadius.circular(20)),
+              //   height: _height,
+              //   width: double.infinity,
+              //   child: c
+              //       ? Column(
+              //           children: [
+              //             Text(music_name,
+              //                 style: TextStyle(fontWeight: FontWeight.bold)),
+              //             Row(
+              //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //               children: [
+              //                 // Icon(Icons.arrow_back_ios),
+              //                 IconButton(
+              //                   onPressed: () {
+              //                     setState(() {
+              //                       if (b) {
+              //                         player;
+              //                         music_icon = Icon(Icons.pause);
+              //                         b = false;
+              //                       } else {
+              //                         player.pause();
+              //                         b = true;
+              //                         music_icon = Icon(Icons.play_arrow);
+              //                       }
+              //                     });
+              //                   },
+              //                   icon: music_icon,
+              //                 ),
+              //                 // Icon(Icons.arrow_forward_ios)
+              //               ],
+              //             ),
+              //           ],
+              //         )
+              //       : Container(),
+              // )
             ],
           ),
         ),
